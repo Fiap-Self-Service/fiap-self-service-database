@@ -71,6 +71,7 @@ resource "aws_docdb_cluster" "docdb_cluster" {
   engine_version       = "4.0.0"
   apply_immediately    = true
   skip_final_snapshot  = true
+  db_subnet_group_name = aws_docdb_subnet_group.docdb_subnet_group.name
 }
 
 # DynamoDB Table
