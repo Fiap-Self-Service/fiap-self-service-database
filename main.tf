@@ -105,6 +105,9 @@ resource "aws_docdb_cluster" "docdb_cluster" {
   engine_version       = "4.0.0"
   apply_immediately    = true
   skip_final_snapshot  = true
+
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
 }
 
 # DynamoDB Table
@@ -133,6 +136,7 @@ resource "aws_dynamodb_table" "dynamo_db" {
 resource "aws_security_group" "rds_sg" {
   name        = "rds_security_group"
   description = "Security group para o RDS e DocumentDB"
+  vpc_id      = module.vpc.vpc_id
 
   ingress {
     from_port   = 3306 # Porta MySQL (RDS)
