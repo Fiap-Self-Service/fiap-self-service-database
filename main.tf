@@ -82,7 +82,10 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 # Grupo de sub-redes para o DocumentDB
 resource "aws_docdb_subnet_group" "docdb_subnet_group" {
   name       = "fiap-self-service-pagamentos-subnet-group"
-  subnet_ids = concat(module.vpc.private_subnets, module.vpc.public_subnets)
+  subnet_ids = [
+    aws_subnet.database_subnet_az1.id,
+    aws_subnet.database_subnet_az2.id
+    ]
 
   tags = {
     Name = "fiap-self-service-pagamentos-subnet-group"
