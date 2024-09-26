@@ -14,6 +14,7 @@ resource "aws_db_instance" "db_instance" {
   publicly_accessible  = false
   skip_final_snapshot  = true
   apply_immediately    = true
+  multi_az             = false
 
   # Configurações de backup e retenção
   backup_retention_period = 7
@@ -21,28 +22,6 @@ resource "aws_db_instance" "db_instance" {
   
   # Configuração de segurança
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
-}
-
-# Criar VPC
-resource "aws_vpc" "main_vpc" {
-  cidr_block = "10.0.0.0/16"
-
-  tags = {
-    Name = "main-vpc"
-  }
-}
-
-# Subredes em diferentes zonas de disponibilidade (AZs)
-resource "aws_subnet" "subnet_1" {
-  vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "us-east-1a"  # Zona de disponibilidade 1
-}
-
-resource "aws_subnet" "subnet_2" {
-  vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = "10.0.2.0/24"
-  availability_zone = "us-east-1b"  # Zona de disponibilidade 2
 }
 
 # Grupo de sub-redes para o DocumentDB
