@@ -19,9 +19,36 @@ resource "aws_db_instance" "db_instance" {
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 }
 
+# Virtual Private Cloud - Rede virtual AWS
+# https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest
+module "vpc" {
+
+  source = "terraform-aws-modules/vpc/aws" 
+
+  name = "vpc-databases" 
+  cidr = "10.0.0.0/16" 
+
+  azs             = ["us-east-1a", "us-east-1a"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+   public_subnet_tags = {
+    "kubernetes.io/role/elb" = 1
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = 1
+  }
+}
+
 # Grupo de sub-redes para o DocumentDB
 resource "aws_docdb_subnet_group" "docdb_subnet_group" {
   name       = "fiap-self-service-pagamentos-subnet-group"
+  subnet_ids = concat(module.vpc.private_subnets, module.vpc.public_subnets)
 
   tags = {
     Name = "fiap-self-service-pagamentos-subnet-group"
