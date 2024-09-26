@@ -68,7 +68,7 @@ resource "aws_subnet" "database_subnet_az2" {
 
 #Subnet group
 resource "aws_db_subnet_group" "db_subnet_group" {
-  name       = "food-db-subnet-group"
+  name       = "db-subnet-group"
   subnet_ids = [
     aws_subnet.database_subnet_az1.id,
     aws_subnet.database_subnet_az2.id
@@ -110,7 +110,7 @@ resource "aws_docdb_cluster" "docdb_cluster" {
   skip_final_snapshot  = true
 
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
-  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
+  db_subnet_group_name   = aws_docdb_subnet_group.docdb_subnet_group.name
 }
 
 # DynamoDB Table
