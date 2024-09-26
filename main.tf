@@ -14,39 +14,14 @@ resource "aws_db_instance" "db_instance" {
   publicly_accessible  = false
   skip_final_snapshot  = true
   apply_immediately    = true
-  multi_az             = false
-
-  # Configurações de backup e retenção
-  backup_retention_period = 7
-  backup_window           = "03:00-04:00"
   
   # Configuração de segurança
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 }
 
-# Criar VPC
-resource "aws_vpc" "main_vpc" {
-  cidr_block = "10.0.0.0/16"
-  tags = {
-    Name = "main-vpc"
-  }
-}
-# Subredes em diferentes zonas de disponibilidade (AZs)
-resource "aws_subnet" "subnet_1" {
-  vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "us-east-1a"  # Zona de disponibilidade 1
-}
-resource "aws_subnet" "subnet_2" {
-  vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = "10.0.2.0/24"
-  availability_zone = "us-east-1b"  # Zona de disponibilidade 2
-}
-
 # Grupo de sub-redes para o DocumentDB
 resource "aws_docdb_subnet_group" "docdb_subnet_group" {
   name       = "fiap-self-service-pagamentos-subnet-group"
-  subnet_ids = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
 
   tags = {
     Name = "fiap-self-service-pagamentos-subnet-group"
@@ -56,7 +31,7 @@ resource "aws_docdb_subnet_group" "docdb_subnet_group" {
 resource "aws_docdb_cluster_instance" "docdb_instance" {
   identifier           = "fiap-self-service-document-db-instance"
   cluster_identifier   = aws_docdb_cluster.docdb_cluster.id
-  instance_class       = "db.r5.large"
+  instance_class       = var.instance_class
   apply_immediately    = true
 }
 
@@ -69,7 +44,6 @@ resource "aws_docdb_cluster" "docdb_cluster" {
   engine_version       = "4.0.0"
   apply_immediately    = true
   skip_final_snapshot  = true
-  db_subnet_group_name = aws_docdb_subnet_group.docdb_subnet_group.name
 }
 
 # DynamoDB Table
