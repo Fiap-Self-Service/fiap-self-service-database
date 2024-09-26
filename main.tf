@@ -17,6 +17,7 @@ resource "aws_db_instance" "db_instance" {
   
   # Configuração de segurança
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
 }
 
 # Virtual Private Cloud - Rede virtual AWS
@@ -42,6 +43,39 @@ module "vpc" {
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
+  }
+}
+
+resource "aws_subnet" "database_subnet_az1" {
+  vpc_id            = module.vpc.vpc_id
+  cidr_block        = "10.0.5.0/24"
+  availability_zone = "us-east-1a"
+
+  tags = {
+    Name = "food_database_subnet_az_1"
+  }
+}
+
+resource "aws_subnet" "database_subnet_az2" {
+  vpc_id            = module.vpc.vpc_id
+  cidr_block        = "10.0.6.0/24"
+  availability_zone = "us-east-1b"
+
+  tags = {
+    Name = "food_database_subnet_az_2"
+  }
+}
+
+#Subnet group
+resource "aws_db_subnet_group" "db_subnet_group" {
+  name       = "food-db-subnet-group"
+  subnet_ids = [
+    aws_subnet.database_subnet_az1.id,
+    aws_subnet.database_subnet_az2.id
+    ]
+
+  tags = {
+    Name = "db_subnet_group"
   }
 }
 
