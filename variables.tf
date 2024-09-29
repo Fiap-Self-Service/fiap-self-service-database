@@ -20,7 +20,7 @@ variable "engine_version" {
 
 variable "instance_class" {
   description = "Tipo de instância do banco de dados."
-  default     = "db.t3.micro"
+  default     = "db.r5.large"
 }
 
 variable "parameter_group" {
