@@ -102,6 +102,8 @@ resource "aws_docdb_cluster" "docdb_cluster" {
   engine_version       = "5.0.0"
   apply_immediately    = true
   skip_final_snapshot  = true
+  
+  allow_major_version_upgrade   = true
 
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   db_subnet_group_name   = aws_docdb_subnet_group.docdb_subnet_group.name
