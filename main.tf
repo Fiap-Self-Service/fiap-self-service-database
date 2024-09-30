@@ -99,7 +99,7 @@ resource "aws_docdb_cluster" "docdb_cluster" {
   master_username      = "root"
   master_password      = "fiaproot"
   engine               = "docdb"
-  engine_version       = "5.0.0"
+  engine_version       = "3.6.0"
   apply_immediately    = true
   skip_final_snapshot  = true
 
