@@ -80,10 +80,6 @@ resource "aws_dynamodb_table" "dynamo_db" {
     name = "id"
     type = "S" # Tipo String
   }
-  attribute {
-    name = "created_at"
-    type = "S" # Tipo String para armazenar datas
-  }
   tags = {
     Name = "fiap-self-service-pedidos-ativos"
   }
