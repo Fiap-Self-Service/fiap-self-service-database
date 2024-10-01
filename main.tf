@@ -76,39 +76,6 @@ resource "aws_db_subnet_group" "db_subnet_group" {
   }
 }
 
-# Grupo de sub-redes para o DocumentDB
-resource "aws_docdb_subnet_group" "docdb_subnet_group" {
-  name       = "fiap-self-service-pagamentos-subnet-group"
-  subnet_ids =  module.vpc.private_subnets
-
-  tags = {
-    Name = "fiap-self-service-pagamentos-subnet-group"
-  }
-}
-
-resource "aws_docdb_cluster_instance" "docdb_instance" {
-  identifier           = "fiap-self-service-document-db-instance"
-  cluster_identifier   = aws_docdb_cluster.docdb_cluster.id
-  instance_class       = var.instance_class
-  apply_immediately    = true
-}
-
-# DocumentDB Cluster
-resource "aws_docdb_cluster" "docdb_cluster" {
-  cluster_identifier   = "fiap-self-service-pagamentos"
-  master_username      = "root"
-  master_password      = "fiaproot"
-  engine               = "docdb"
-  engine_version       = "5.0.0"
-  apply_immediately    = true
-  skip_final_snapshot  = true
-  
-  allow_major_version_upgrade   = true
-
-  vpc_security_group_ids = [aws_security_group.rds_sg.id]
-  db_subnet_group_name   = aws_docdb_subnet_group.docdb_subnet_group.name
-}
-
 # DynamoDB Table
 resource "aws_dynamodb_table" "dynamo_db" {
   name           = "fiap-self-service-pedidos-ativos"
