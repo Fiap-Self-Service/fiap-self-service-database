@@ -11,7 +11,7 @@ resource "aws_db_instance" "db_instance" {
   username             = "root"
   password             = "fiaproot"
   parameter_group_name = var.parameter_group
-  publicly_accessible  = false
+  publicly_accessible  = true
   skip_final_snapshot  = true
   apply_immediately    = true
 
