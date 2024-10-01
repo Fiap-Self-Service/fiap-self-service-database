@@ -15,7 +15,7 @@ variable "engine" {
 
 variable "engine_version" {
   description = "A versão do mecanismo de banco de dados."
-  default     = "8.0"
+  default     = "8.0.35"
 }
 
 variable "instance_class" {
