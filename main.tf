@@ -19,14 +19,6 @@ resource "aws_db_instance" "db_instance" {
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
 
-  # Criando os banco de dados para os microsservicos
-  provisioner "local-exec" {
-    command = <<EOT
-      sleep 60
-      mysql -h ${self.endpoint} -u ${self.username} -p${self.password} -e "CREATE DATABASE clientes;"
-      mysql -h ${self.endpoint} -u ${self.username} -p${self.password} -e "CREATE DATABASE produtos;"
-    EOT
-  }
 }
 
 # Virtual Private Cloud - Rede virtual AWS
