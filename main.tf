@@ -22,6 +22,7 @@ resource "aws_db_instance" "db_instance" {
   # Criando os banco de dados para os microsservicos
   provisioner "local-exec" {
     command = <<EOT
+      sleep 60
       mysql -h ${self.endpoint} -u ${self.username} -p${self.password} -e "CREATE DATABASE clientes;"
       mysql -h ${self.endpoint} -u ${self.username} -p${self.password} -e "CREATE DATABASE produtos;"
     EOT
