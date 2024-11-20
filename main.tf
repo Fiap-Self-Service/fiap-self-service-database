@@ -7,7 +7,7 @@ resource "aws_db_instance" "db_instance" {
   engine               = var.engine
   engine_version       = var.engine_version
   instance_class       = var.instance_class
-  db_name              = "fiapSelfServiceDb"
+  db_name              = "pedidos"
   username             = "root"
   password             = "fiaproot"
   parameter_group_name = var.parameter_group
@@ -18,6 +18,14 @@ resource "aws_db_instance" "db_instance" {
   # Configuração de segurança
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
+
+  # Criando os banco de dados para os microsservicos
+  provisioner "local-exec" {
+    command = <<EOT
+      mysql -h ${self.endpoint} -u ${self.username} -p${self.password} -e "CREATE DATABASE clientes;"
+      mysql -h ${self.endpoint} -u ${self.username} -p${self.password} -e "CREATE DATABASE produtos;"
+    EOT
+  }
 }
 
 # Virtual Private Cloud - Rede virtual AWS
